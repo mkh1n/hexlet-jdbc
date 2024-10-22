@@ -13,6 +13,7 @@ public class DatabaseManager {
 
     private static Connection conn;
 
+    //подключение к моей локальной базе данных
     public void connect() throws SQLException {
         String url = "jdbc:postgresql://localhost:5432/library_db";
         String user = "postgres";
@@ -20,10 +21,15 @@ public class DatabaseManager {
         conn = DriverManager.getConnection(url, user, password);
     }
 
+    //закрытие соединение
     public void closeConnection() throws SQLException {
         conn.close();
     }
+
     //я назвал поле с годом выпуска в базе данных published_date
+    //добавление книги
+    //с помощью try-with-resources мой statement автоматически закрывается в каждом методе
+    //и память не утекает
     public int addBook(String title, String author, Date publishedDate, String isbn) throws SQLException {
         String sqlQuery = "INSERT INTO books (title, author, published_date, isbn) VALUES (?, ?, ?, ?) RETURNING id";
         try (PreparedStatement statement = conn.prepareStatement(sqlQuery)) {
@@ -35,12 +41,13 @@ public class DatabaseManager {
                 if (resultSet.next()) {
                     return resultSet.getInt("id");
                 } else {
-                    throw new SQLException("Failed to retrieve the ID of the inserted book.");
+                    throw new SQLException("Failed to add book.");
                 }
             }
         }
     }
 
+    //получение списка всех книг
     public List<Book> getAllBooks() throws SQLException {
         List<Book> result = new ArrayList<>();
         String sqlQuery = "SELECT * FROM books";
@@ -57,7 +64,7 @@ public class DatabaseManager {
         }
         return result;
     }
-
+    //поиск книг по названию
     public List<Book> findBooksByTitle(String title) throws SQLException {
         List<Book> result = new ArrayList<>();
         String sqlQuery = "SELECT * FROM books WHERE title = ?";
@@ -76,7 +83,7 @@ public class DatabaseManager {
         }
         return result;
     }
-
+    //удаление книги, возвращает id удаленной книги, или выбрасывает ошибку в случае неудачи
     public int deleteBook(int id) throws SQLException {
         String sqlQuery = "DELETE FROM books WHERE id = ?";
         try (PreparedStatement statement = conn.prepareStatement(sqlQuery)) {
@@ -89,7 +96,7 @@ public class DatabaseManager {
             }
         }
     }
-
+    //добавление читателя
     public int addReader(String name, String email) throws SQLException {
         String sqlQuery = "INSERT INTO readers (name, email) VALUES (?, ?) RETURNING id";
         try (PreparedStatement statement = conn.prepareStatement(sqlQuery)) {
@@ -99,12 +106,12 @@ public class DatabaseManager {
                 if (resultSet.next()) {
                     return resultSet.getInt("id");
                 } else {
-                    throw new SQLException("Failed to retrieve the ID of the inserted reader.");
+                    throw new SQLException("Failed to add reader.");
                 }
             }
         }
     }
-
+    // получаения списка всех читателей
     public List<Reader> getAllReaders() throws SQLException {
         List<Reader> result = new ArrayList<>();
         String sqlQuery = "SELECT * FROM readers";
@@ -119,7 +126,7 @@ public class DatabaseManager {
         }
         return result;
     }
-
+    //поиск читателя по имейл, так как он email уникальный, он всего один такой будет
     public Reader findReaderByEmail(String email) throws SQLException {
         String sqlQuery = "SELECT * FROM readers WHERE email = ?";
         try (PreparedStatement statement = conn.prepareStatement(sqlQuery)) {
@@ -136,6 +143,7 @@ public class DatabaseManager {
             }
         }
     }
+    //удаление читателя
     public int deleteReader(int id) throws SQLException {
         String sqlQuery = "DELETE FROM readers WHERE id = ?";
         try (PreparedStatement statement = conn.prepareStatement(sqlQuery)) {
