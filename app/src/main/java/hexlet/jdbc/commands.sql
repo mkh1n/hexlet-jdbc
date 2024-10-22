@@ -1,0 +1,15 @@
+CREATE DATABASE library_db;
+
+CREATE TABLE books (
+  id SERIAL PRIMARY KEY,
+  title VARCHAR(100) NOT NULL,
+  author VARCHAR(100) NOT NULL,
+  published_date DATE NOT NULL,
+  isbn VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE readers (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL
+);

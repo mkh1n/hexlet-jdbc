@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 public class Application {
     public static void main(String[] args) throws SQLException {
-        var conn = DriverManager.getConnection("jdbc:h2:mem:hexlet_test");
+        var conn = DriverManager.getConnection("jdbc:h2:mem:library_db");
         var sql = "CREATE TABLE users (id BIGINT PRIMARY KEY AUTO_INCREMENT, username VARCHAR(255), phone VARCHAR(255))";
 
         var statement = conn.createStatement();
@@ -36,5 +36,5 @@ public class Application {
         // Закрываем соединение
         conn.close();
     }
-
+    
 }

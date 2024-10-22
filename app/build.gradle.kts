@@ -45,4 +45,10 @@ application {
 
 dependencies {
     implementation("com.h2database:h2:2.2.220")
+    compileOnly("org.projectlombok:lombok:1.18.34")
+    annotationProcessor("org.projectlombok:lombok:1.18.34")
+    implementation("org.postgresql:postgresql:42.7.2")
+
+    testCompileOnly("org.projectlombok:lombok:1.18.34")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.34")
 }
